@@ -46,7 +46,6 @@ async function extractPalette(imageFileName, paletteFileName) {
     const swatchRatio = swatch.population / totalPopulation;
     newSwatches.push({ name: colorName, color: swatch.hex, ratio: swatchRatio });
   }
-  console.log(`writing ${paletteFileName}`);
   fs.writeFileSync(paletteFileName, JSON.stringify(newSwatches));
   return newSwatches;
 }
