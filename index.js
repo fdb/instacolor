@@ -65,9 +65,10 @@ async function handleGetPalette(insta) {
 app.get('/', (req, res) => {
   const html = `<!doctype html>
   <html>
-  <head><meta charset="utf-8"><title>instacolor</title>
+  <head><meta charset="utf-8"><title>instakleur</title>
   <style>
-    body, html { font: 14px sans-serif; background: #fafafa; color: #666; max-width: 1000px; padding: 5vw; margin: 0 auto; }
+    body, html { font: 14px sans-serif; background: #fafafa; color: #666; max-width: 1000px; padding: 0 5vw; margin: 30px auto; }
+    h2 { margin: 2.5rem 0 0.5rem 0; }
     a { color: inherit; text-decoration: none; border-bottom: 2px solid rgba(0, 0, 0, 0.2); }
     li { margin-bottom: 1rem; }
     input { margin: 20px 0; padding: 5px 10px; border-radius: 3px; font: inherit; color: inherit; border: 1px solid #ddd; }
@@ -75,7 +76,7 @@ app.get('/', (req, res) => {
   </style>
   </head>
   <body>
-  <h1>instacolor</h1>
+  <h1>instakleur</h1>
   <h2>Try It</h2>
   <form method="get" action="/insta">
     <input id="insta" type="text" placeholder="tastycreamery">
@@ -94,8 +95,8 @@ app.get('/', (req, res) => {
   <p>Get a color palette from an Instagram profile.</p>
   <p>Palettes are cached -- a new one is generated every day.</p>
   <p>Example: <code><a href="/api/palette/natgeo">/api/palette/natgeo</a></code></p>
-
-
+  <h2>Source Code</h2>
+  <p>Source code is available on <a href="https://github.com/fdb/instakleur">GitHub</a>.</p>
   <script>
     document.querySelector('form').addEventListener('submit', (e) => {
       e.preventDefault();
@@ -114,9 +115,9 @@ app.get('/palette/:insta', (req, res) => {
   handleGetPalette(insta)
     .then(palette => {
       let html = '<!doctype html>\n';
-      html += '<html><head><meta charset="utf-8"><title>instacolor</title>\n';
+      html += '<html><head><meta charset="utf-8"><title>instakleur</title>\n';
       html += '<style>\n';
-      html += 'body, html { font: 14px sans-serif; background: #fafafa; color: #666; max-width: 1000px; padding: 5vw; margin: 0 auto; }\n';
+      html += 'body, html { font: 14px sans-serif; background: #fafafa; color: #666; max-width: 1000px; padding: 0 5vw; margin: 30px auto; }\n';
       html += 'a { color: inherit; text-decoration: none; border-bottom: 2px solid rgba(0, 0, 0, 0.2); }\n'
       html += '.wrap { display: flex; flex-direction: row; align-items: flex-start;  justify-content: flex-start; }\n';
       html += 'svg { margin-right: 50px; }\n';
@@ -127,7 +128,7 @@ app.get('/palette/:insta', (req, res) => {
       html += '.swatch { display: inline-block; width: 1rem; height: 1rem; margin-right: 1rem; vertical-align: top; }\n';
       html += '</style>\n';
       html += '</head><body>\n';
-      html += `<h1><a href="/">instacolor</a> – <a href="https://instagram.com/${insta}/">${insta}</a></h1>\n`;
+      html += `<h1><a href="/">instakleur</a> – <a href="https://instagram.com/${insta}/">${insta}</a></h1>\n`;
       let svg = '<svg xmlns="http://www.w3.org/2000/svg" width="200" height="500" viewBox="0 0 200 500">\n';
       let table = '<table><tr><th>Name</th><th>Color</th><th>Ratio</th></tr>';
       let y = 0;
