@@ -12,7 +12,7 @@ const app = express();
 app.use(cors());
 
 async function downloadPageAsImage(insta, fileName) {
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
   const page = await browser.newPage();
   page.setViewport({ width: PAGE_WIDTH, height: PAGE_HEIGHT});
   await page.goto(`https://www.instagram.com/${insta}/`);
