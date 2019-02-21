@@ -68,6 +68,8 @@ app.get('/', (req, res) => {
   <head><meta charset="utf-8"><title>instacolor</title>
   <style>
     body, html { font: 14px sans-serif; background: #fafafa; color: #666; max-width: 1000px; padding: 5vw; margin: 0 auto; }
+    a { color: inherit; text-decoration: none; border-bottom: 2px solid rgba(0, 0, 0, 0.2); }
+    li { margin-bottom: 1rem; }
     input { margin: 20px 0; padding: 5px 10px; border-radius: 3px; font: inherit; color: inherit; border: 1px solid #ddd; }
     input[type="submit"] { background-color: #3897f0; color: white; border-color: #3897f0; }
   </style>
@@ -88,8 +90,8 @@ app.get('/', (req, res) => {
     <li><a href="/palette/therock">therock</a></li>
   </ul>
   <h2>API</h2>
-  <pre>/api/palette/INSTA</pre>
-  <p>Get a color palette from an Instagram profile</p>
+  <pre>/api/palette/<span style="color: #3897f0">INSTAGRAM_NAME</span></pre>
+  <p>Get a color palette from an Instagram profile.</p>
   <p>Palettes are cached -- a new one is generated every day.</p>
   <p>Example: <code><a href="/api/palette/natgeo">/api/palette/natgeo</a></code></p>
 
@@ -115,6 +117,7 @@ app.get('/palette/:insta', (req, res) => {
       html += '<html><head><meta charset="utf-8"><title>instacolor</title>\n';
       html += '<style>\n';
       html += 'body, html { font: 14px sans-serif; background: #fafafa; color: #666; max-width: 1000px; padding: 5vw; margin: 0 auto; }\n';
+      html += 'a { color: inherit; text-decoration: none; border-bottom: 2px solid rgba(0, 0, 0, 0.2); }\n'
       html += '.wrap { display: flex; flex-direction: row; align-items: flex-start;  justify-content: flex-start; }\n';
       html += 'svg { margin-right: 50px; }\n';
       html += 'table { border-collapse: collapse; }\n';
@@ -124,7 +127,7 @@ app.get('/palette/:insta', (req, res) => {
       html += '.swatch { display: inline-block; width: 1rem; height: 1rem; margin-right: 1rem; vertical-align: top; }\n';
       html += '</style>\n';
       html += '</head><body>\n';
-      html += `<h1>instacolor - ${insta}</h1>\n`;
+      html += `<h1><a href="/">instacolor</a> – <a href="https://instagram.com/${insta}/">${insta}</a></h1>\n`;
       let svg = '<svg xmlns="http://www.w3.org/2000/svg" width="200" height="500" viewBox="0 0 200 500">\n';
       let table = '<table><tr><th>Name</th><th>Color</th><th>Ratio</th></tr>';
       let y = 0;
