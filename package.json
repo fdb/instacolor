@@ -13,7 +13,6 @@
   "dependencies": {
     "cors": "2.8.5",
     "express": "4.16.4",
-    "img-color-extractor": "1.0.7",
     "node-vibrant": "3.2.0-alpha",
     "puppeteer": "1.12.2"
   },
