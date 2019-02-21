@@ -64,14 +64,47 @@ async function handleGetPalette(insta) {
 }
 
 app.get('/', (req, res) => {
-  let html = '<!doctype html>';
-  html += '<html><head><meta charset="utf-8"><title>instacolor</title>';
-  html += '<style>body, html { font: 14px sans-serif; background: #fafafa; color: #666; max-width: 1000px; padding: 5vw; margin: 0 auto; }</style>';
-  html += '</head><body>';
-  html += '<h1>instacolor</h1>';
-  html += '<pre>/api/palette/INSTA</pre>';
-  html += 'Get a color palette from an Instagram profile.';
-  html += 'Palettes are cached -- a new one is generated every day.';
+  const html = `<!doctype html>
+  <html>
+  <head><meta charset="utf-8"><title>instacolor</title>
+  <style>
+    body, html { font: 14px sans-serif; background: #fafafa; color: #666; max-width: 1000px; padding: 5vw; margin: 0 auto; }
+    input { margin: 20px 0; padding: 5px 10px; border-radius: 3px; font: inherit; color: inherit; border: 1px solid #ddd; }
+    input[type="submit"] { background-color: #3897f0; color: white; border-color: #3897f0; }
+  </style>
+  </head>
+  <body>
+  <h1>instacolor</h1>
+  <h2>Try It</h2>
+  <form method="get" action="/insta">
+    <input id="insta" type="text" placeholder="tastycreamery">
+    <input type="submit" value="Generate Palette">
+  </form>
+  <h2>Example Profiles</h2>
+  <ul>
+    <li><a href="/palette/natgeo">National Geographic</a></li>
+    <li><a href="/palette/katyperry">Katy Perry</a></li>
+    <li><a href="/palette/buzzfeedtasty">buzzfeedtasty</a></li>
+    <li><a href="/palette/leomessi">Leo Messi</a></li>
+    <li><a href="/palette/therock">therock</a></li>
+  </ul>
+  <h2>API</h2>
+  <pre>/api/palette/INSTA</pre>
+  <p>Get a color palette from an Instagram profile</p>
+  <p>Palettes are cached -- a new one is generated every day.</p>
+  <p>Example: <code><a href="/api/palette/natgeo">/api/palette/natgeo</a></code></p>
+
+
+  <script>
+    document.querySelector('form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const insta = document.querySelector('#insta').value;
+      document.location = '/palette/' + insta;
+    });
+  </script>
+  </body>
+  </html>
+  `;
   res.send(html);
 });
 
