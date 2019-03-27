@@ -5,6 +5,8 @@ const puppeteer = require('puppeteer');
 const rgbaPalette = require('get-rgba-palette');
 const PNG = require('png-js');
 
+const getHashtags = require('./hashtags').getHashtags;
+
 const PAGE_HEADER_HEIGHT = 650;
 const PAGE_WIDTH = 1024;
 const PAGE_HEIGHT = 2700;
@@ -87,6 +89,11 @@ async function handleGetPalette(insta) {
   // console.log(ids, colors, amount );
 
   return palette;
+}
+
+async function handleGetHashtags(insta) {
+  const hashtags = await getHashtags(insta);
+  return hashtags;
 }
 
 app.get('/', (req, res) => {
@@ -189,6 +196,17 @@ app.get('/api/palette/:insta', (req, res) => {
       res.send({ status: 'error', error: error.toString() });
     })
 })
+
+app.get('/api/hashtags/:insta', (req, res) => {
+  const insta = req.params.insta;
+  handleGetHashtags(insta)
+    .then(hashtags => {
+      res.send({ status: 'ok', hashtags });
+    })
+    .catch(error => {
+      res.send({ status: 'error', error: error.toString() });
+    })
+});
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
