@@ -1,8 +1,9 @@
 const express = require('express');
 const cors = require('cors');
-const vibrant = require('node-vibrant');
 const fs = require('fs');
 const puppeteer = require('puppeteer');
+const rgbaPalette = require('get-rgba-palette');
+const PNG = require('png-js');
 
 const PAGE_HEADER_HEIGHT = 650;
 const PAGE_WIDTH = 1024;
@@ -10,6 +11,16 @@ const PAGE_HEIGHT = 2700;
 
 const app = express();
 app.use(cors());
+
+function componentToHex(c) {
+    const hex = c.toString(16);
+    return hex.length == 1 ? "0" + hex : hex;
+}
+
+function rgbToHex(r, g, b) {
+    return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
+}
+
 
 async function downloadPageAsImage(insta, fileName) {
   const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
@@ -24,6 +35,15 @@ async function downloadPageAsImage(insta, fileName) {
   await browser.close();
 }
 
+async function rawExtractPalette(imageFileName) {
+  return new Promise(function(resolve) {
+      PNG.decode(imageFileName, function (pixels) {
+        const colors = rgbaPalette.bins(pixels, 10);
+        resolve(colors);
+      });
+  });
+}
+
 async function extractPalette(imageFileName, paletteFileName) {
   if (fs.existsSync(paletteFileName)) {
     return new Promise((resolve, reject) => {
@@ -35,16 +55,17 @@ async function extractPalette(imageFileName, paletteFileName) {
     });
   }
 
-  const palette = await vibrant.from(imageFileName).getPalette();
-  const colorNames = Object.keys(palette);
-  const swatches = colorNames.map(name => palette[name]);
+  const palette = await rawExtractPalette(imageFileName);
+
+  //const palette = await vibrant.from(imageFileName).getPalette();
+  //const colorNames = Object.keys(palette);
+  //const swatches = colorNames.map(name => palette[name]);
   const newSwatches = [];
-  const totalPopulation = swatches.reduce((sum, swatch) => sum + swatch.population, 0);
-  for (let i = 0; i < swatches.length; i++) {
-    const swatch = swatches[i];
-    const colorName = colorNames[i];
-    const swatchRatio = swatch.population / totalPopulation;
-    newSwatches.push({ name: colorName, color: swatch.hex, ratio: swatchRatio });
+  // const totalPopulation = swatches.reduce((sum, swatch) => sum + swatch.population, 0);
+  for (let i = 0; i < palette.length; i++) {
+    const swatch = palette[i];
+    const hex = rgbToHex(swatch.color[0], swatch.color[1], swatch.color[2]);
+    newSwatches.push({ color: hex, ratio: swatch.amount });
   }
   fs.writeFileSync(paletteFileName, JSON.stringify(newSwatches));
   return newSwatches;
@@ -59,6 +80,12 @@ async function handleGetPalette(insta) {
     await downloadPageAsImage(insta, imageFileName);
   }
   const palette = await extractPalette(imageFileName, paletteFileName);
+
+  //console.log(imageFileName);
+
+  // const { ids, colors, amount } = imagePalette(await imagePixels(imageFileName));
+  // console.log(ids, colors, amount );
+
   return palette;
 }
 
@@ -130,12 +157,12 @@ app.get('/palette/:insta', (req, res) => {
       html += '</head><body>\n';
       html += `<h1><a href="/">instakleur</a> – <a href="https://instagram.com/${insta}/">${insta}</a></h1>\n`;
       let svg = '<svg xmlns="http://www.w3.org/2000/svg" width="200" height="500" viewBox="0 0 200 500">\n';
-      let table = '<table><tr><th>Name</th><th>Color</th><th>Ratio</th></tr>';
+      let table = '<table><tr><th>Color</th><th>Ratio</th></tr>';
       let y = 0;
       for (const swatch of palette) {
         const swatchHeight = swatch.ratio * 500;
         svg += `  <rect x="0" y="${y}" width="200" height="${swatchHeight}" fill="${swatch.color}" />\n`;
-        table += `  <tr><td>${swatch.name}</td><td><span class="swatch" style="background-color: ${swatch.color}"></span>${swatch.color}</td><td>${(swatch.ratio * 100).toFixed(2)}%</td></tr>\n`;
+        table += `  <tr><td><span class="swatch" style="background-color: ${swatch.color}"></span>${swatch.color}</td><td>${(swatch.ratio * 100).toFixed(2)}%</td></tr>\n`;
         y += swatchHeight;
       }
       svg += '</svg>\n';
