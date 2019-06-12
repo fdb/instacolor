@@ -14,8 +14,9 @@
     "cors": "2.8.5",
     "express": "4.16.4",
     "get-rgba-palette": "2.0.1",
+    "node-fetch": "2.6.0",
     "png-js": "0.1.1",
-    "puppeteer": "1.12.2"
+    "puppeteer": "1.17.0"
   },
   "devDependencies": {
     "nodemon": "1.18.10"
