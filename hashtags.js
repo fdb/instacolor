@@ -34,8 +34,6 @@ async function getProfile(insta) {
     endIndex
   );
 
-  const hashtagMap = {};
-
   const sharedData = JSON.parse(json);
   const profile = sharedData.entry_data.ProfilePage[0].graphql.user;
   return profile;
@@ -44,6 +42,7 @@ async function getProfile(insta) {
 async function getHashtags(insta) {
   const profile = await getProfile(insta);
   const posts = profile.edge_owner_to_timeline_media.edges;
+  const hashtagMap = {};
   for (const post of posts) {
     const caption = post.node.edge_media_to_caption.edges[0].node.text;
     const re = /#(\w+)/g;
