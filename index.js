@@ -5,7 +5,7 @@ const puppeteer = require("puppeteer");
 const rgbaPalette = require("get-rgba-palette");
 const PNG = require("png-js");
 
-const getHashtags = require("./hashtags").getHashtags;
+const { getHashtags, getLocations } = require("./hashtags");
 
 const PAGE_HEADER_HEIGHT = 650;
 const PAGE_WIDTH = 1024;
@@ -104,6 +104,11 @@ async function handleGetPalette(insta) {
 async function handleGetHashtags(insta) {
   const hashtags = await getHashtags(insta);
   return hashtags;
+}
+
+async function handleGetLocations(insta) {
+  const locations = await getLocations(insta);
+  return locations;
 }
 
 app.get("/", (req, res) => {
@@ -229,6 +234,17 @@ app.get("/api/hashtags/:insta", (req, res) => {
   handleGetHashtags(insta)
     .then(hashtags => {
       res.send({ status: "ok", hashtags });
+    })
+    .catch(error => {
+      res.send({ status: "error", error: error.toString() });
+    });
+});
+
+app.get("/api/locations/:insta", (req, res) => {
+  const insta = req.params.insta;
+  handleGetLocations(insta)
+    .then(locations => {
+      res.send({ status: "ok", locations });
     })
     .catch(error => {
       res.send({ status: "error", error: error.toString() });
